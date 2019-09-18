@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'paginaNova.dart';
 import 'pessoa.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../helper/pessoa_helper.dart';
 
 
 
@@ -12,6 +13,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  PersonHelper helper = PersonHelper();
+  List<Person> person = List();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
