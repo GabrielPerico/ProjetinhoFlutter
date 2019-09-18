@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../helper/pessoa_helper.dart';
 
 class paginaNova extends StatefulWidget {
+  final Person pessoinha;
+  paginaNova({this.pessoinha});
   @override
   _paginaNovaState createState() => _paginaNovaState();
 }
@@ -11,6 +14,22 @@ class _paginaNovaState extends State<paginaNova> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _nameFocus = FocusNode();
+
+
+  Person _editedPessoinha;
+  bool _userEdited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pessoinha == null) {
+      _editedPessoinha = Person();
+    } else {
+      _editedPessoinha = Person.fromMap(widget.pessoinha.toMap());
+      _nameController.text = _editedPessoinha.nome;
+      _emailController.text = _editedPessoinha.telefone;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

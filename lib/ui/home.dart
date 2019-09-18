@@ -145,6 +145,14 @@ class _HomePageState extends State<HomePage> {
           );
         });
   }
+
+  void _getAllPersons(){
+    helper.getAllPersons().then((list){
+    setState(() {
+      person = list;
+    });
+    });
+  }
 }
 
 
