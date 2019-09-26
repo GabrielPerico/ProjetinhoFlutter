@@ -5,16 +5,17 @@ import '../helper/pessoa_helper.dart';
 
 class paginaNova extends StatefulWidget {
   final Person pessoinha;
+
   paginaNova({this.pessoinha});
+
   @override
   _paginaNovaState createState() => _paginaNovaState();
 }
 
 class _paginaNovaState extends State<paginaNova> {
   final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _telefoneController = TextEditingController();
   final _nameFocus = FocusNode();
-
 
   Person _editedPessoinha;
   bool _userEdited = false;
@@ -27,59 +28,87 @@ class _paginaNovaState extends State<paginaNova> {
     } else {
       _editedPessoinha = Person.fromMap(widget.pessoinha.toMap());
       _nameController.text = _editedPessoinha.nome;
-      _emailController.text = _editedPessoinha.telefone;
+      _telefoneController.text = _editedPessoinha.telefone;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
+        onWillPop: _requestPop,
         child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text('Coisa loka'),
-        centerTitle: true,
-      ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.save),
-          backgroundColor: Colors.blueAccent,
-          onPressed: () {
-            FocusScope.of(context).requestFocus(_nameFocus);
-          }),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: "Nome"),
-              focusNode: _nameFocus,
-              onChanged: (text) {},
-              controller: _nameController,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: "Email"),
-              onChanged: (text) {},
-              keyboardType: TextInputType.emailAddress,
-              controller: _emailController,
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: RaisedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                color: Colors.blueAccent,
-                textColor: Colors.white,
-                child: Text(
-                  "SALVAR",
-                  style: TextStyle(fontSize: 20.0),
+          appBar: AppBar(
+            backgroundColor: Colors.blueAccent,
+            title: Text(_editedPessoinha.nome ?? 'Novo contato'),
+            centerTitle: true,
+          ),
+          floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.save),
+              backgroundColor: Colors.blueAccent,
+              onPressed: () {
+                if (_editedPessoinha.nome != null &&
+                    _editedPessoinha.nome.isNotEmpty) {
+                  Navigator.pop(context, _editedPessoinha);
+                } else {
+                  FocusScope.of(context).requestFocus(_nameFocus);
+                }
+              }),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(labelText: "Nome"),
+                  focusNode: _nameFocus,
+                  onChanged: (text) {
+                    _userEdited = true;
+                    _editedPessoinha.nome = text;
+                  },
+                  controller: _nameController,
                 ),
-                padding: EdgeInsets.only(left: 130.0, right: 130.0),
-              ),
-            )
-          ],
-        ),
-      ),
-    ));
+                TextField(
+                  decoration: InputDecoration(labelText: "Telefone"),
+                  onChanged: (text) {
+                    _userEdited = true;
+                    _editedPessoinha.telefone = text;
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _telefoneController,
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+
+  Future<bool> _requestPop() {
+    if (_userEdited) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Descartar alterações?'),
+              content: Text('Se sair as alterações serão perdidas.'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Cancelar'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                FlatButton(
+                  child: Text('Sim'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            );
+          });
+      return Future.value(false);
+    } else {
+      return Future.value(true);
+    }
   }
 }

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'ui/home.dart';
+import 'ui/login.dart';
+import 'helper/login_helper.dart';
 
+void main() async{
+  LoginHelper helper = LoginHelper();
 
-void main() {
   runApp(MaterialApp(
-      home: HomePage(),
+      home: (await helper.getLogado() == true)?HomePage():LoginPage(),
       debugShowCheckedModeBanner: false,
     ));
+
+
 }
+
 
