@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Text('Login'),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

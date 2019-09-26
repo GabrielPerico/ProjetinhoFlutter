@@ -20,12 +20,20 @@ class _HomePageState extends State<HomePage> {
   List<Person> person = List();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getAllPersons();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('App maneiro'),
           backgroundColor: Colors.blueAccent,
           centerTitle: true,
+          automaticallyImplyLeading: false,
           actions: <Widget>[
             PopupMenuButton<OrderOptions>(
                 itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
@@ -53,12 +61,19 @@ class _HomePageState extends State<HomePage> {
           child: Icon(Icons.add),
           backgroundColor: Colors.blueAccent,
         ),
-        body: ListView.builder(
-            padding: EdgeInsets.all(10.0),
-            itemCount: person.length,
-            itemBuilder: (context, index) {
-              return _personCard(context, index);
-            }));
+
+        body:WillPopScope(
+            child: ListView.builder(
+                padding: EdgeInsets.all(10.0),
+                itemCount: person.length,
+                itemBuilder: (context, index) {
+                  return _personCard(context, index);
+                }),
+            onWillPop: (){
+              return null;
+            })
+    );
+
   }
 
   void _showContactPage({Person person}) async {
